@@ -829,6 +829,16 @@ function buildEntityHierarchyData() {
                 (e.name === 'The Principle Foundation' || e.code === 'TPF_PARENT')
         ) || appState.entities.find(e => e.parent_entity_id === null);
 
+    /* ------------------------------------------------------------------
+     * Ensure the root node is tagged with the correct visual type
+     * ------------------------------------------------------------------ */
+    if (rootEntity) {
+        const rootRef = entityMap[String(rootEntity.id)];
+        if (rootRef) {
+            rootRef.type = appState.entityTypes.ROOT;
+        }
+    }
+
     const hierarchy = {
         root: rootEntity ? entityMap[String(rootEntity.id)] : null,
         entities: entityMap
@@ -900,7 +910,19 @@ function createEntityHierarchyNode(node) {
     
     // Create node container with the appropriate class based on node type
     const nodeContainer = document.createElement('div');
-    nodeContainer.className = `hierarchy-node ${node.type === appState.entityTypes.FUND ? 'fund-node' : 'entity-node'}`;
+    /* --------------------------------------------------------------
+     * Map logical node types to CSS classes
+     *  • ROOT  → root-node   (organisation level)
+     *  • FUND  → fund-node   (leaf-level fund)
+     *  • ENTITY (default) → entity-node
+     * -------------------------------------------------------------- */
+    let visualClass = 'entity-node';
+    if (node.type === appState.entityTypes.ROOT) {
+        visualClass = 'root-node';
+    } else if (node.type === appState.entityTypes.FUND) {
+        visualClass = 'fund-node';
+    }
+    nodeContainer.className = `hierarchy-node ${visualClass}`;
     nodeContainer.dataset.id = node.id;
     nodeContainer.dataset.type = node.type;
     nodeContainer.dataset.name = node.name; // Add name for easier debugging

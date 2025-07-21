@@ -1269,6 +1269,30 @@
         }
 
         /**
+         * Generic helper for GET requests to the backend API.
+         * Mirrors the implementation used in src/js/app.js so that
+         * entities, funds, and other core datasets load consistently.
+         *
+         * @param {string} endpoint -  api/{endpoint}  (e.g., 'entities')
+         * @returns {Promise<Array|Object>} parsed JSON response
+         */
+        async function fetchData(endpoint) {
+            try {
+                console.log(`Fetching data from /api/${endpoint} …`);
+                const response = await fetch(`${API_BASE_URL}/api/${endpoint}`);
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log(`Received ${Array.isArray(data) ? data.length : 1} item(s) from /api/${endpoint}`);
+                return data;
+            } catch (error) {
+                console.error(`Error fetching ${endpoint}:`, error);
+                return [];
+            }
+        }
+
+        /**
          * Shows a "Coming Soon" message in the specified table body
          * @param {string} tableBodyId - The ID of the table body element
          * @param {number} colSpan - The number of columns to span
@@ -1298,16 +1322,11 @@
         
         // API Calls
         async function fetchEntities() {
-            try {
-                console.debug('[API Call] Fetching entities from /api/entities');
-                const response = await fetch(`${API_BASE_URL}/api/entities`);
-                
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
-                }
-                
-                entities = await response.json();
-                console.debug('[API Result] Entities loaded:', entities.length);
+            entities = await fetchData('entities');
+            if (!entities.length) {
+                showToast('Error', 'Failed to load entities', true);
+                return;
+            }
                 
                 // Populate entity dropdowns
                 const entitySelects = [
@@ -1341,17 +1360,12 @@
         }
         
         async function fetchFunds(entityId = null) {
-            try {
-                const url = entityId ? `${API_BASE_URL}/api/funds?entityId=${entityId}` : `${API_BASE_URL}/api/funds`;
-                console.debug('[API Call] Fetching funds from', url);
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
-                }
-                
-                funds = await response.json();
-                console.debug('[API Result] Funds loaded:', funds.length);
+            const endpoint = entityId ? `funds?entityId=${entityId}` : 'funds';
+            funds = await fetchData(endpoint);
+            if (!funds.length) {
+                showToast('Error', 'Failed to load funds', true);
+                return;
+            }
                 
                 // Populate fund dropdowns
                 const fundSelects = [

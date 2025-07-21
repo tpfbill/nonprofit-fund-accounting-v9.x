@@ -179,10 +179,6 @@ async function loadFundData() {
         // Update dashboard fund balances
         updateDashboardFundBalances();
         
-        // Funds are now available – rebuild entity-hierarchy viz so
-        // second-level entities display their funds correctly.
-        updateEntityHierarchyVisualization();
-        
         return funds;
     } catch (error) {
         console.error('Error loading fund data:', error);
@@ -755,8 +751,6 @@ function updateEntitiesTable() {
         button.addEventListener('click', () => deleteEntity(button.dataset.id));
     });
     
-    // Update entity hierarchy visualization
-    updateEntityHierarchyVisualization();
 }
 
 function updateEntityHierarchyVisualization() {
@@ -2156,6 +2150,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadJournalEntryData(),
         loadUserData()
     ]);
+
+    // All core datasets (including entities & funds) are now in memory – 
+    // safe to rebuild the hierarchy diagram exactly once during start-up.
+    updateEntityHierarchyVisualization();
 
     // Load dashboard data
     loadDashboardData();

@@ -1,4 +1,40 @@
-Server running on port 3000
-Open http://localhost:3000 in your browser
-Database connected successfully at: 2025-06-24T04:37:27.332Z
-2025-06-24T04:38:48.929Z [GET] /api/db-status
+[startup] Registering GET /api/bank-accounts route
+Server running on port 3000 (bound to 0.0.0.0)
+Local  : http://localhost:3000
+Remote : http://<this-host-IP-or-Tailscale-hostname>:3000
+Database connected successfully at: 2025-07-21T20:49:49.187Z
+Table "users" is present or created.
+Column "import_id" on "journal_entries" is present or created.
+Table "custom_report_definitions" is present or created.
+Table "bank_accounts" is present or created.
+2025-07-21T20:50:21.256Z [GET] /api/health
+2025-07-21T20:50:21.278Z [GET] /User_Guide_v9.0.pdf
+2025-07-21T21:05:26.329Z [GET] /api/entities
+2025-07-21T21:05:26.439Z [GET] /api/entities
+2025-07-21T21:05:26.444Z [GET] /api/journal-entries
+2025-07-21T21:05:26.445Z [GET] /api/users
+2025-07-21T21:12:18.391Z [GET] /api/entities
+2025-07-21T21:12:18.496Z [GET] /api/entities
+2025-07-21T21:12:18.508Z [GET] /api/journal-entries
+2025-07-21T21:12:18.508Z [GET] /api/users
+2025-07-21T21:13:01.468Z [GET] /api/entities
+2025-07-21T21:13:01.516Z [GET] /api/entities
+2025-07-21T21:13:01.520Z [GET] /api/journal-entries
+2025-07-21T21:13:01.521Z [GET] /api/users
+2025-07-21T21:23:25.229Z [GET] /api/entities
+2025-07-21T21:29:31.071Z [GET] /api/entities
+2025-07-21T21:29:31.175Z [GET] /api/entities
+2025-07-21T21:29:31.179Z [GET] /api/journal-entries
+2025-07-21T21:29:31.180Z [GET] /api/users
+2025-07-21T21:30:38.832Z [GET] /api/entities
+2025-07-21T21:30:38.884Z [GET] /api/entities
+2025-07-21T21:30:38.887Z [GET] /api/journal-entries
+2025-07-21T21:30:38.888Z [GET] /api/users
+2025-07-21T21:31:13.890Z [GET] /api/entities
+2025-07-21T21:31:13.986Z [GET] /api/entities
+2025-07-21T21:31:13.990Z [GET] /api/journal-entries
+2025-07-21T21:31:13.990Z [GET] /api/users
+2025-07-21T21:33:23.861Z [GET] /api/entities
+2025-07-21T21:33:23.912Z [GET] /api/entities
+2025-07-21T21:33:23.915Z [GET] /api/journal-entries
+2025-07-21T21:33:23.915Z [GET] /api/users

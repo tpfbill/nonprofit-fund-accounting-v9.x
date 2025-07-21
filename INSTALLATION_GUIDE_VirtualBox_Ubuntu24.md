@@ -29,7 +29,7 @@
    • Ubuntu 24.04 ISO: <https://ubuntu.com/download/desktop>
 
 2. **Create a new VM**  
-   - Name: `Ubuntu24-FundAcct-v8_9`  
+   - Name: `Ubuntu24-FundAcct-v9_0`  
    - Type: *Linux* → version *Ubuntu (64-bit)*  
    - Memory: **6144 MB**  
    - Processors: **4 vCPU** (System ➜ Processor)  
@@ -121,7 +121,7 @@ sudo -u postgres psql -d fund_accounting_db -f database/db-init.sql
 ```
 `database/db-init.sql` now contains **all** required tables and columns – no manual `ALTER` steps needed.
 
-### 5.3 NACHA Vendor Payments Schema (v8.9)
+### 5.3 NACHA Vendor Payments Schema (v9.0)
 
 ```bash
 sudo -u postgres psql -d fund_accounting_db -f database/nacha-vendor-payments-schema.sql
@@ -154,11 +154,24 @@ cd /opt/nonprofit-fund-accounting
 npx http-server . -p 8080 --no-cache
 ```
 
+**Alternative (single-command) approach**  
+The project’s *package.json* ships with helper scripts that can save time:
+
+```bash
+# Start only the static frontend (port 8080)
+npm run client
+
+# OR start both backend (port 3000) and frontend (port 8080) concurrently
+npm run dev
+```
+
+Using `npm run dev` is handy during active development because it launches both services in the background and streams their combined output.
+
 Browse to **http://localhost:8080/index.html** (from within the VM or via host browser if using bridged network).
 
 ---
 
-## 7 Testing Checklist (v8.9)
+## 7 Testing Checklist (v9.0)
 
 | Test | Steps | Expected Outcome |
 |------|-------|------------------|
@@ -222,5 +235,5 @@ sudo -u postgres pg_restore -d fund_accounting_db -c fundacct_2025-07-19.dump
 
 ---
 
-**Enjoy your fully-functional Non-Profit Fund Accounting System v8.9 on Ubuntu 24.04!**  
+**Enjoy your fully-functional Non-Profit Fund Accounting System v9.0 on Ubuntu 24.04!**  
 For more details see the in-app **Documentation** tab or the project README.  

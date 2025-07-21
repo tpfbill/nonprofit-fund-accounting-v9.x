@@ -1,10 +1,10 @@
-# Non-Profit Fund Accounting System v8.9  
+# Non-Profit Fund Accounting System v9.0  
 ### Installation Guide – VirtualBox on Windows 11 (Ubuntu 24.04 LTS Guest)
 
 > Architecture overview  
 > • **Host OS:** Windows 11 (runs Oracle VM VirtualBox)  
 > • **Guest OS:** Ubuntu Desktop 24.04 inside the VM  
-> • **Application:** Non-Profit Fund Accounting System v8.9 installed in `/opt/nonprofit-fund-accounting`
+> • **Application:** Non-Profit Fund Accounting System v9.0 installed in `/opt/nonprofit-fund-accounting`
 
 ---
 

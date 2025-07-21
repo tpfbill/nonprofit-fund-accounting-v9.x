@@ -14,7 +14,7 @@ const { Client } = require('pg');
 const fs = require('fs');
 const { execSync } = require('child_process');
 const path = require('path');
-const { getDbConfig } = require('./src/db/db-config');
+const { getDbConfig } = require('../src/db/db-config');
 
 // Import the Principle Foundation data loader
 const { loadPrincipleFoundationData } = require('./load-principle-foundation-data');
@@ -121,6 +121,7 @@ async function checkDatabaseConnection() {
 async function initializeDatabaseSchema() {
   printInfo('Initializing database schema...');
   
+  // db-init.sql now resides in the same directory as this script (/database)
   const dbInitPath = path.join(__dirname, 'db-init.sql');
   
   if (!fs.existsSync(dbInitPath)) {

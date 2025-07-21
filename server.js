@@ -9,7 +9,8 @@ const multer = require('multer');
 const { parse } = require('csv-parse/sync');
 const crypto = require('crypto');
 // Inter-entity transfer helper
-const registerInterEntityTransferRoutes = require('./inter-entity-transfer-api');
+// NOTE: helper moved to src/js during v9.0 re-organisation
+const registerInterEntityTransferRoutes = require('./src/js/inter-entity-transfer-api');
 
 const app = express();
 const PORT = process.env.PORT || 3000;

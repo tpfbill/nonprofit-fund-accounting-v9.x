@@ -13,7 +13,7 @@
 
 const { Client } = require('pg');
 const crypto = require('crypto');
-const { getDbConfig } = require('./src/db/db-config');
+const { getDbConfig } = require('../src/db/db-config');
 
 // Configuration
 const CONFIG = {
@@ -64,7 +64,8 @@ const CONFIG = {
     { code: '5500', name: 'Travel', type: 'Expense' },
     { code: '5600', name: 'Program Expenses', type: 'Expense' },
     { code: '5700', name: 'Grants and Assistance', type: 'Expense' },
-    { code: '9100', name: 'Inter-Entity Transfers', type: 'Transfer' }
+    // Use a valid type accepted by the `accounts_type_check` constraint
+    { code: '9100', name: 'Inter-Entity Transfers', type: 'Expense' }
   ],
   // Standard funds
   FUNDS: {
@@ -633,7 +634,7 @@ async function createJournalEntry(client, entityId, description, entryDate, refe
   
   await client.query(
     `INSERT INTO journal_entries 
-     (id, entity_id, description, date, reference_number, total_amount, status, is_inter_entity, target_entity_id, matching_transaction_id)
+     (id, entity_id, description, entry_date, reference_number, total_amount, status, is_inter_entity, target_entity_id, matching_transaction_id)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
     [
       journalEntryId,

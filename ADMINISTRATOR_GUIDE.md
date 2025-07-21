@@ -1,4 +1,4 @@
-# Nonprofit Fund Accounting System - Administrator's Guide (v8.9)
+# Nonprofit Fund Accounting System - Administrator's Guide (v9.0)
 
 ## 1. Introduction and Scope
 

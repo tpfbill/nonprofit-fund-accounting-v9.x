@@ -73,6 +73,23 @@
         .account-number-masked {
             font-family: monospace;
         }
+
+        /* --------------------------------------------------------------
+           Consistent primary action button (imported from main app)
+        -------------------------------------------------------------- */
+        .action-button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .action-button:hover {
+            background-color: #43a047;
+        }
     </style>
 </head>
 <body>
@@ -82,25 +99,11 @@
         </div>
     </div>
 
-    <!-- Simplified header with Back button -->
-    <header class="bg-primary text-white py-2">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <h5 class="m-0 fw-semibold">
-                Nonprofit Fund Accounting – Vendor Payments
-            </h5>
-            <button
-                class="btn btn-light btn-sm"
-                onclick="window.location.href='index.html'">
-                <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
-            </button>
-        </div>
-    </header>
-
     <div class="container-fluid mt-4">
-        <!-- In-page Back button for convenience -->
-        <div class="d-flex justify-content-end mb-3">
+        <!-- Single centered Back button -->
+        <div class="text-center mb-4">
             <button
-                class="btn btn-outline-primary"
+                class="action-button"
                 onclick="window.location.href='index.html'">
                 <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
             </button>

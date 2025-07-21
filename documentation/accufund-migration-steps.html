@@ -239,7 +239,7 @@
                 <div class="command">
                     git clone https://github.com/tpfbill/nonprofit-fund-accounting.git<br>
                     cd nonprofit-fund-accounting<br>
-                    git checkout v8.8
+                    git checkout v9.0
                 </div>
                 <li>Install Node.js dependencies:</li>
                 <div class="command">
@@ -409,7 +409,7 @@
             <div class="step-title"><span class="step-number">4</span>Create Bank Account Mapping</div>
             <p>Map AccuFund bank accounts to the new system's bank_accounts table structure.</p>
             <ol>
-                <li>Create a spreadsheet with the following columns to match the v8.7+ bank_accounts table:
+                <li>Create a spreadsheet with the following columns to match the v9.0+ bank_accounts table:
                     <ul>
                         <li>bank_name</li>
                         <li>account_name</li>
@@ -468,7 +468,7 @@
     </div>
 
     <div id="inter-entity" class="section-content">
-        <h2>4. Inter-Entity Transfer Migration (v8.8)</h2>
+        <h2>4. Inter-Entity Transfer Migration (v9.0)</h2>
         
         <div class="step">
             <div class="step-title"><span class="step-number">1</span>Identify Inter-Entity Transactions</div>
@@ -498,7 +498,7 @@
                 <li>Update your account mapping to include these specialized accounts</li>
             </ol>
             <div class="note">
-                <strong>Note:</strong> The v8.8 Inter-Entity Transfer feature requires specific account structures. Each entity should have:
+                <strong>Note:</strong> The v9.0 Inter-Entity Transfer feature requires specific account structures. Each entity should have:
                 <ul>
                     <li>One "Due From" account (Asset, 19xx) for each counter-party entity</li>
                     <li>One "Due To" account (Liability, 29xx) for each counter-party entity</li>
@@ -576,7 +576,7 @@
                 <li>Set the appropriate <code>target_entity_id</code> for each entry</li>
             </ol>
             <div class="warning">
-                <strong>Warning:</strong> This step is critical for maintaining proper inter-entity relationships. Single-entry transactions must be split to work with the v8.8 Inter-Entity Transfer feature.
+                <strong>Warning:</strong> This step is critical for maintaining proper inter-entity relationships. Single-entry transactions must be split to work with the v9.0 Inter-Entity Transfer feature.
             </div>
         </div>
     </div>
@@ -767,7 +767,7 @@
                 </div>
             </ol>
             <div class="note">
-                <strong>Note:</strong> The Bank Account Management module in v8.7+ requires proper setup of bank accounts to enable reconciliation and transaction matching features.
+                <strong>Note:</strong> The Bank Account Management module in v9.0+ requires proper setup of bank accounts to enable reconciliation and transaction matching features.
             </div>
         </div>
 
@@ -840,7 +840,7 @@
                 <li>Verify that each bank account is properly linked to its corresponding GL account</li>
             </ol>
             <div class="tip">
-                <strong>Tip:</strong> The Bank Account Management module added in v8.7 provides a comprehensive reconciliation workflow. Test this feature with a sample bank statement to ensure it works as expected.
+                <strong>Tip:</strong> The Bank Account Management module added in v9.0 provides a comprehensive reconciliation workflow. Test this feature with a sample bank statement to ensure it works as expected.
             </div>
         </div>
 
@@ -981,7 +981,7 @@
 
     <div class="section-content">
         <h2>Conclusion</h2>
-        <p>Following this step-by-step guide should result in a successful migration from AccuFund to the Nonprofit Fund Accounting System v8.8. The process requires careful planning, thorough validation, and attention to detail, especially for inter-entity transfers and bank account management.</p>
+        <p>Following this step-by-step guide should result in a successful migration from AccuFund to the Nonprofit Fund Accounting System v9.0. The process requires careful planning, thorough validation, and attention to detail, especially for inter-entity transfers and bank account management.</p>
         
         <p>After completing the migration, be sure to:</p>
         <ul>

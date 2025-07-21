@@ -81,6 +81,32 @@ body {
     color: white;
 }
 
+/* ------------------------------------------------------------------
+   Anchor-based navigation items (e.g., Documentation link)
+   ------------------------------------------------------------------ */
+
+/* Ensure anchors styled as nav items look identical to div.nav-item */
+a.nav-item {
+    text-decoration: none;   /* remove default underline */
+    color: inherit;          /* use same color as surrounding nav items */
+    display: block;          /* behave like block-level nav buttons */
+}
+
+/* Hover state – mirror .nav-item:hover */
+a.nav-item:hover {
+    background-color: #e0e0e0;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Other link states should not introduce underlines or color shifts */
+a.nav-item:visited,
+a.nav-item:active,
+a.nav-item:focus {
+    text-decoration: none;
+    color: inherit;
+}
+
 /* Layout */
 .container {
     display: flex;

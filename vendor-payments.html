@@ -1322,76 +1322,62 @@
         
         // API Calls
         async function fetchEntities() {
-            entities = await fetchData('entities');
-            if (!entities.length) {
-                showToast('Error', 'Failed to load entities', true);
-                return;
-            }
-                
-                // Populate entity dropdowns
-                const entitySelects = [
-                    document.getElementById('entityId'),
-                    document.getElementById('editEntityId'),
-                    document.getElementById('batchEntityId'),
-                    document.getElementById('settingsEntityId'),
-                    document.getElementById('editSettingsEntityId')
-                ];
-                
-                entitySelects.forEach(select => {
-                    if (!select) return;
-                    
-                    // Clear existing options except the first one
-                    while (select.options.length > 1) {
-                        select.remove(1);
-                    }
-                    
-                    // Add entity options
-                    entities.forEach(entity => {
-                        const option = document.createElement('option');
-                        option.value = entity.id;
-                        option.textContent = entity.name;
-                        select.appendChild(option);
-                    });
+            const response = await fetch(`${API_BASE_URL}/api/entities`);
+            entities = await response.json();
+
+            const entitySelects = [
+                document.getElementById('entityId'),
+                document.getElementById('editEntityId'),
+                document.getElementById('batchEntityId'),
+                document.getElementById('settingsEntityId'),
+                document.getElementById('editSettingsEntityId')
+            ];
+
+            entitySelects.forEach(select => {
+                if (!select) return;
+
+                // Clear existing options except the first one
+                while (select.options.length > 1) {
+                    select.remove(1);
+                }
+
+                // Add entity options
+                entities.forEach(entity => {
+                    const option = document.createElement('option');
+                    option.value = entity.id;
+                    option.textContent = entity.name;
+                    select.appendChild(option);
                 });
-            } catch (error) {
-                console.error('Error fetching entities:', error);
-                showToast('Error', 'Failed to load entities', true);
-            }
+            });
         }
         
         async function fetchFunds(entityId = null) {
-            const endpoint = entityId ? `funds?entityId=${entityId}` : 'funds';
-            funds = await fetchData(endpoint);
-            if (!funds.length) {
-                showToast('Error', 'Failed to load funds', true);
-                return;
-            }
-                
-                // Populate fund dropdowns
-                const fundSelects = [
-                    document.getElementById('batchFundId')
-                ];
-                
-                fundSelects.forEach(select => {
-                    if (!select) return;
-                    
-                    // Clear existing options except the first one
-                    while (select.options.length > 1) {
-                        select.remove(1);
-                    }
-                    
-                    // Add fund options
-                    funds.forEach(fund => {
-                        const option = document.createElement('option');
-                        option.value = fund.id;
-                        option.textContent = fund.name;
-                        select.appendChild(option);
-                    });
+            const url = entityId
+                ? `${API_BASE_URL}/api/funds?entityId=${entityId}`
+                : `${API_BASE_URL}/api/funds`;
+            const response = await fetch(url);
+            funds = await response.json();
+
+            const fundSelects = [
+                document.getElementById('batchFundId')
+            ];
+
+            fundSelects.forEach(select => {
+                if (!select) return;
+
+                // Clear existing options except the first one
+                while (select.options.length > 1) {
+                    select.remove(1);
+                }
+
+                // Add fund options
+                funds.forEach(fund => {
+                    const option = document.createElement('option');
+                    option.value = fund.id;
+                    option.textContent = fund.name;
+                    select.appendChild(option);
                 });
-            } catch (error) {
-                console.error('Error fetching funds:', error);
-                showToast('Error', 'Failed to load funds', true);
-            }
+            });
         }
         
         async function fetchBankAccounts() {

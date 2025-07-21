@@ -1589,12 +1589,49 @@
             }
             
             batches.forEach(batch => {
-                const row = document.createElement('tr');
+                    <td>${setting.originating_dfi_id}</td>
+                    <td>${setting.company_entry_description}</td>
+                    <td>${setting.settlement_account_name || ''}</td>
+                    <td>${setting.is_production ? 'Yes' : 'No'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary edit-nacha-settings-btn" data-settings-id="${setting.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
                 row.innerHTML = `
                     <td>${batch.batch_number}</td>
                     <td>${formatDate(batch.batch_date)}</td>
                     <td>${batch.description || ''}</td>
                     <td>${batch.entity_name || ''}</td>
+        /* --------------------------------------------------------------
+           Simple page initialisation
+        -------------------------------------------------------------- */
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                showLoading();
+                await fetchEntities();
+                await fetchFunds();
+                await fetchBankAccounts();
+                await fetchVendors();
+                await fetchNachaSettings();
+                await fetchBatches();
+                await fetchNachaFiles();
+            } catch (e) {
+                console.error('Page init error', e);
+            } finally {
+                hideLoading();
+            }
+
+            /* When entity dropdown in Create-Batch modal changes, refresh funds */
+            const entitySelect = document.getElementById('batchEntityId');
+            if (entitySelect) {
+                entitySelect.addEventListener('change', () => {
+                    const id = entitySelect.value || null;
+                    fetchFunds(id);
+                });
+            }
+        });
+
                     <td>${formatCurrency(batch.total_amount)}</td>
                     <td>${batch.total_items || 0}</td>
                     <td><span class="badge ${getStatusBadgeClass(batch.status)}">${batch.status}</span></td>
@@ -1656,4 +1693,7 @@
             
             nachaSettings.forEach(setting => {
                 const row = document.createElement('tr');
-                row.innerHTML
+                row.innerHTML = `
+                    <td>${setting.company_name}</td>
+                    <td>${setting.company_id}</td>
+                    <td>${setting

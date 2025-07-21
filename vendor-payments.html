@@ -1196,43 +1196,109 @@
         /********************************************************************
          * NACHA Vendor Payments – client-side fallback for missing endpoints
          * ------------------------------------------------------------------
-         * 1. Intercepts fetch calls to soon-to-be-implemented endpoints and
-         *    returns empty arrays instead of 404 errors.
+         * 1. Intercepts fetch calls to specific NACHA endpoints that don't exist
+         *    and returns empty arrays instead of 404 errors.
          * 2. Suppresses error toasts for those endpoints.
+         * 3. Uses precise path matching to avoid interfering with legitimate
+         *    API calls like /api/entities and /api/funds.
          ********************************************************************/
         (() => {
-            const pending = [
+            // Specific NACHA endpoints that don't exist yet
+            const missingEndpoints = [
                 '/api/payment-batches',
                 '/api/vendors',
                 '/api/nacha-settings',
                 '/api/nacha-files'
             ];
 
-            const originalFetch = window.fetch;
-            window.fetch = (url, opts) => {
-                if (typeof url === 'string' && pending.some(p => url.includes(p))) {
-                    return originalFetch(url, opts).then(r => {
-                        if (r.status === 404) {
-                            console.info('[Fallback] Endpoint not yet implemented →', url);
-                            return Promise.resolve(new Response('[]', { status: 200 }));
-                        }
-                        return r;
-                    });
+            // Helper to extract path from URL for precise matching
+            function getPathFromUrl(url) {
+                try {
+                    // Handle both URL objects and strings
+                    const urlObj = typeof url === 'string' ? new URL(url, window.location.origin) : url;
+                    // Get pathname and remove trailing slash if present
+                    let path = urlObj.pathname;
+                    if (path.endsWith('/')) path = path.slice(0, -1);
+                    return path;
+                } catch (e) {
+                    // If URL parsing fails, return the original string
+                    console.debug('[URL Parse] Failed to parse URL:', url);
+                    return typeof url === 'string' ? url : String(url);
                 }
-                return originalFetch(url, opts);
+            }
+
+            // Is this a missing NACHA endpoint or a child of one?
+            function isMissingNachaEndpoint(url) {
+                if (!url) return false;
+                
+                const path = getPathFromUrl(url);
+                console.debug('[Endpoint Check] Checking path:', path);
+                
+                // Check if this is a missing endpoint or a child of one
+                return missingEndpoints.some(endpoint => {
+                    // Exact match
+                    if (path === endpoint) return true;
+                    
+                    // Child path (e.g., /api/vendors/123)
+                    if (path.startsWith(endpoint + '/')) return true;
+                    
+                    // Query parameters (e.g., /api/payment-batches?status=draft)
+                    if (path === endpoint.split('?')[0]) return true;
+                    
+                    return false;
+                });
+            }
+
+            // Store the original fetch function
+            const originalFetch = window.fetch;
+            
+            // Override fetch to intercept missing NACHA endpoints
+            window.fetch = function(url, options) {
+                // Check if this URL is a missing NACHA endpoint
+                if (url && isMissingNachaEndpoint(url)) {
+                    console.info('[API Intercept] Handling missing NACHA endpoint:', url);
+                    
+                    // First try the original fetch to see if it's a 404
+                    return originalFetch(url, options)
+                        .then(response => {
+                            if (response.status === 404) {
+                                console.info('[API Intercept] Returning mock data for missing endpoint:', url);
+                                return Promise.resolve(new Response('[]', { 
+                                    status: 200,
+                                    headers: { 'Content-Type': 'application/json' }
+                                }));
+                            }
+                            return response;
+                        })
+                        .catch(err => {
+                            console.warn('[API Intercept] Error fetching:', err);
+                            // Return empty array for network errors too
+                            return Promise.resolve(new Response('[]', { 
+                                status: 200,
+                                headers: { 'Content-Type': 'application/json' }
+                            }));
+                        });
+                }
+                
+                // For all other URLs, use the original fetch
+                return originalFetch(url, options);
             };
 
+            // Override showToast to suppress errors for missing endpoints
             const originalToast = window.showToast ?? (() => {});
             window.showToast = (title, msg, isErr) => {
+                // Suppress specific error messages for missing NACHA endpoints
                 if (
                     isErr &&
-                    msg.match(/Failed to load (payment batches|vendors|NACHA settings|vendor bank accounts)/i)
+                    msg.match(/Failed to load (payment batches|vendors|NACHA settings|vendor bank accounts|NACHA files)/i)
                 ) {
-                    // Silently ignore expected 404s for WIP modules
+                    console.info('[Toast Suppress] Suppressed error toast:', msg);
                     return;
                 }
                 originalToast(title, msg, isErr);
             };
+            
+            console.info('[API Intercept] Initialized - Missing NACHA endpoints will return empty arrays');
         })();
 
         // API Configuration
@@ -1361,8 +1427,10 @@
         // API Calls
         async function fetchEntities() {
             try {
+                console.debug('[API Call] Fetching entities from /api/entities');
                 const response = await fetch(`${API_BASE_URL}/api/entities`);
                 entities = await handleApiResponse(response, 'entities');
+                console.debug('[API Result] Entities loaded:', entities.length);
                 
                 // Populate entity dropdowns
                 const entitySelects = [
@@ -1407,8 +1475,10 @@
         async function fetchFunds(entityId = null) {
             try {
                 const url = entityId ? `${API_BASE_URL}/api/funds?entityId=${entityId}` : `${API_BASE_URL}/api/funds`;
+                console.debug('[API Call] Fetching funds from', url);
                 const response = await fetch(url);
                 funds = await handleApiResponse(response, 'funds');
+                console.debug('[API Result] Funds loaded:', funds.length);
                 
                 // Populate fund dropdowns
                 const fundSelects = [
@@ -1442,6 +1512,7 @@
         
         async function fetchBankAccounts() {
             try {
+                console.debug('[API Call] Fetching bank accounts from /api/bank-accounts');
                 const response = await fetch(`${API_BASE_URL}/api/bank-accounts`);
 
                 /* ----------------------------------------------------------
@@ -1463,6 +1534,7 @@
                 }
 
                 bankAccounts = await response.json();
+                console.debug('[API Result] Bank accounts loaded:', bankAccounts.length);
                 
                 // Populate bank account dropdowns
                 const bankAccountSelects = [
@@ -1498,6 +1570,7 @@
         async function fetchVendors() {
             try {
                 showLoading();
+                console.debug('[API Call] Fetching vendors from /api/vendors');
                 const response = await fetch(`${API_BASE_URL}/api/vendors`);
                 
                 // Handle 404 (endpoint not implemented) gracefully
@@ -1513,6 +1586,7 @@
                 }
                 
                 vendors = await response.json();
+                console.debug('[API Result] Vendors loaded:', vendors.length);
                 renderVendorsTable();
                 
                 // Populate vendor dropdowns
@@ -1538,185 +1612,4 @@
                     });
                 });
                 
-                hideLoading();
-            } catch (error) {
-                hideLoading();
-                console.error('Error fetching vendors:', error);
-                // Only show toast for non-404 errors (404s are handled above)
-                if (!error.message.includes('404')) {
-                    showToast('Error', 'Failed to load vendors', true);
-                }
-            }
-        }
-        
-        async function fetchVendorBankAccounts(vendorId, targetSelect) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/vendors/${vendorId}/bank-accounts`);
-                
-                // Handle 404 (endpoint not implemented) gracefully
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        console.info(`[fetchVendorBankAccounts] /api/vendors/${vendorId}/bank-accounts not available (404) - feature not implemented yet`);
-                        // Clear existing options except the first one
-                        while (targetSelect.options.length > 1) {
-                            targetSelect.remove(1);
-                        }
-                        return;
-                    }
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                const bankAccounts = await response.json();
-                
-                // Clear existing options except the first one
-                while (targetSelect.options.length > 1) {
-                    targetSelect.remove(1);
-                }
-                
-                // Add bank account options
-                bankAccounts.forEach(account => {
-                    const option = document.createElement('option');
-                    option.value = account.id;
-                    option.textContent = `${account.account_name} - ${account.account_type} (${maskAccountNumber(account.account_number)})`;
-                    if (account.is_primary) {
-                        option.textContent += ' (Primary)';
-                        option.selected = true;
-                    }
-                    targetSelect.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Error fetching vendor bank accounts:', error);
-                // Only show toast for non-404 errors
-                if (!error.message.includes('404')) {
-                    showToast('Error', 'Failed to load vendor bank accounts', true);
-                }
-            }
-        }
-        
-        async function fetchNachaSettings() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/nacha-settings`);
-                
-                // Handle 404 (endpoint not implemented) gracefully
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        console.info('[fetchNachaSettings] /api/nacha-settings not available (404) - feature not implemented yet');
-                        nachaSettings = [];
-                        showComingSoonMessage('nachaSettingsTableBody', 7, 'NACHA Settings Coming Soon');
-                        return;
-                    }
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                nachaSettings = await response.json();
-                renderNachaSettingsTable();
-                
-                // Populate NACHA settings dropdowns
-                const settingsSelects = [
-                    document.getElementById('nachaSettingsId')
-                ];
-                
-                settingsSelects.forEach(select => {
-                    if (!select) return;
-                    
-                    // Clear existing options except the first one
-                    while (select.options.length > 1) {
-                        select.remove(1);
-                    }
-                    
-                    // Add settings options
-                    nachaSettings.forEach(setting => {
-                        const option = document.createElement('option');
-                        option.value = setting.id;
-                        option.textContent = `${setting.company_name} (${setting.company_entry_description})`;
-                        select.appendChild(option);
-                    });
-                });
-            } catch (error) {
-                console.error('Error fetching NACHA settings:', error);
-                // Only show toast for non-404 errors
-                if (!error.message.includes('404')) {
-                    showToast('Error', 'Failed to load NACHA settings', true);
-                }
-            }
-        }
-        
-        async function fetchBatches() {
-            try {
-                showLoading();
-                const statusFilter = document.getElementById('batchStatusFilter').value;
-                const url = statusFilter ? `${API_BASE_URL}/api/payment-batches?status=${statusFilter}` : `${API_BASE_URL}/api/payment-batches`;
-                const response = await fetch(url);
-                
-                // Handle 404 (endpoint not implemented) gracefully
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        console.info('[fetchBatches] /api/payment-batches not available (404) - feature not implemented yet');
-                        showComingSoonMessage('batchesTableBody', 8, 'Payment Batches Coming Soon');
-                        hideLoading();
-                        return;
-                    }
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                const batches = await response.json();
-                renderBatchesTable(batches);
-                hideLoading();
-            } catch (error) {
-                hideLoading();
-                console.error('Error fetching payment batches:', error);
-                // Only show toast for non-404 errors
-                if (!error.message.includes('404')) {
-                    showToast('Error', 'Failed to load payment batches', true);
-                }
-            }
-        }
-        
-        /* --------------------------------------------------------------
-           Render payment batches table
-        -------------------------------------------------------------- */
-        function renderBatchesTable(batches) {
-            const tableBody = document.getElementById('batchesTableBody');
-            tableBody.innerHTML = '';
-
-            // No data
-            if (!batches || batches.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="8" class="text-center">No payment batches found</td>';
-                tableBody.appendChild(row);
-                return;
-            }
-
-            // Populate rows
-            batches.forEach(batch => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${batch.batch_number}</td>
-                    <td>${formatDate(batch.batch_date)}</td>
-                    <td>${batch.description || ''}</td>
-                    <td>${batch.entity_name || ''}</td>
-                    <td>${formatCurrency(batch.total_amount)}</td>
-                    <td>${batch.total_items || 0}</td>
-                    <td><span class="badge ${getStatusBadgeClass(batch.status)}">${batch.status}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary view-batch-btn" data-batch-id="${batch.id}">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            // Attach event listeners
-            document.querySelectorAll('.view-batch-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const batchId = btn.getAttribute('data-batch-id');
-                    fetchBatchDetails(batchId);
-                });
-            });
-        }
-
-        /* --------------------------------------------------------------
-           Render NACHA settings table
-        -------------------------------------------------------------- */
-        function renderNachaSettingsTable() {
+                hideLoading

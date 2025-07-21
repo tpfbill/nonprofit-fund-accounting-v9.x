@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="override-entities.js"></script>
+    <script src="src/js/override-entities.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Non-Profit Fund Accounting System - Refactored</title>
     <!-- Updated cache-busting query string to force latest CSS (visited-state fix) -->
     <link rel="stylesheet" href="src/css/styles.css?v=20250712030000">
     <!-- Debug panel for capturing JS errors early -->
-    <script src="debug.js"></script>
+    <script src="debug/debug.js"></script>
     <!-- Chart.js for graphical dashboards -->
     <script id="chartjs-script"
             src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
@@ -17,7 +17,7 @@
             onload="console.log('[Chart.js] library loaded:', typeof Chart !== 'undefined');">
     </script>
     <!-- Chart.js debugging utilities -->
-    <script src="chart-debug.js"></script>
+    <script src="debug/chart-debug.js"></script>
 </head>
 <body>
     <div class="header">
@@ -578,6 +578,6 @@
     <!-- Main application script -->
     <!-- Main application script -->
     <!-- Cache-busting timestamp updated to force fresh load -->
-    <script src="app.js?v=20250712020000"></script>
+    <script src="src/js/app.js?v=20250712020000"></script>
 </body>
 </html>

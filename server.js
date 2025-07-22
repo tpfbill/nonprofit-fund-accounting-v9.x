@@ -1239,7 +1239,7 @@ app.get('/api/documents', (req, res) => {
       const stats = fs.statSync(path.join(__dirname, filename));
       return {
         filename,
-        // Turn "AccuFund_Migration_Guide_v8.6.pdf" ➜ "AccuFund Migration Guide v8.6"
+        // Turn "AccuFund_Migration_Guide_v9.0.pdf" ➜ "AccuFund Migration Guide v9.0"
         displayName: filename.replace(/_/g, ' ').replace(/\.pdf$/i, ''),
         size: stats.size,
         lastModified: stats.mtime,
@@ -1248,6 +1248,7 @@ app.get('/api/documents', (req, res) => {
     });
 
     console.log('Returning document metadata count:', documents.length);
+    // Send response back to client
     res.json({ success: true, count: documents.length, documents });
   } catch (error) {
     console.error('Error fetching documents:', error);

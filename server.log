@@ -270,3 +270,11 @@ Table "bank_accounts" is present or created.
 2025-07-21T22:56:23.234Z [GET] /api/vendors
 2025-07-21T22:56:23.235Z [GET] /api/nacha-settings
 2025-07-21T22:56:23.235Z [GET] /api/payment-batches
+2025-07-22T14:44:08.514Z [GET] /api/entities
+2025-07-22T14:44:08.714Z [GET] /api/entities
+2025-07-22T14:44:08.716Z [GET] /api/journal-entries
+2025-07-22T14:44:08.720Z [GET] /api/users
+2025-07-22T14:44:25.198Z [GET] /api/entities
+2025-07-22T14:44:25.293Z [GET] /api/entities
+2025-07-22T14:44:25.294Z [GET] /api/journal-entries
+2025-07-22T14:44:25.295Z [GET] /api/users

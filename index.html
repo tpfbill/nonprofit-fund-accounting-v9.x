@@ -9,8 +9,6 @@
     <link rel="stylesheet" href="src/css/styles.css?v=20250721170000">
     <!-- Entity hierarchy visualization styles -->
     <link rel="stylesheet" href="src/css/entity-hierarchy.css?v=20250721150000">
-    <!-- Debug panel for capturing JS errors early -->
-    <script src="debug/debug.js"></script>
     <!-- Chart.js for graphical dashboards -->
     <script id="chartjs-script"
             src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
@@ -18,8 +16,6 @@
             crossorigin="anonymous"
             onload="console.log('[Chart.js] library loaded:', typeof Chart !== 'undefined');">
     </script>
-    <!-- Chart.js debugging utilities -->
-    <script src="debug/chart-debug.js"></script>
 </head>
 <body>
     <div class="header">
@@ -53,14 +49,14 @@
             <!-- Vendor Payments navigation -->
             <div class="nav-item" onclick="window.location.href='vendor-payments.html'">Vendor Payments</div>
             <!-- Inter-Entity Transfer wizard navigation -->
-            <div class="nav-item" onclick="window.location.href='inter-entity-transfer-wizard.html'">Inter-Entity Transfer</div>
+            <div class="nav-item" onclick="window.location.href='docs/utilities/inter-entity-transfer-wizard.html'">Inter-Entity Transfer</div>
             <div class="nav-item" data-page="fund-reports">Fund Reports</div>
             <!-- Custom Reports Builder navigation -->
-            <div class="nav-item" onclick="window.location.href='custom-reports-builder.html'">Custom Reports</div>
+            <div class="nav-item" onclick="window.location.href='docs/utilities/custom-reports-builder.html'">Custom Reports</div>
             <!-- Natural Language Queries navigation -->
-            <div class="nav-item" onclick="window.location.href='natural-language-queries.html'">Ask Questions</div>
+            <div class="nav-item" onclick="window.location.href='docs/utilities/natural-language-queries.html'">Ask Questions</div>
             <!-- Documentation Library navigation - direct anchor link with no JavaScript -->
-            <a href="direct-docs.html" class="nav-item">Documentation</a>
+            <a href="docs/utilities/direct-docs.html" class="nav-item">Documentation</a>
             <div class="nav-item" onclick="window.location.href='reports.html'">Reports</div>
             <div class="nav-item" data-page="settings">Settings</div>
         </div>

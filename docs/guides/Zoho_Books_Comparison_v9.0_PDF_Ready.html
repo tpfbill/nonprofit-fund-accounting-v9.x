@@ -5,73 +5,150 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Custom Accounting System (v9.0) vs. Zoho Books - Comparison for Grant-Making Charities</title>
     <style>
+        /* Print-specific styles */
+        @page {
+            size: letter;
+            margin: 1in 0.75in;
+        }
+        
+        @media print {
+            .page-break {
+                page-break-before: always;
+            }
+            
+            thead {
+                display: table-header-group;
+            }
+            
+            tfoot {
+                display: table-footer-group;
+            }
+            
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            
+            a {
+                text-decoration: none;
+                color: #000;
+            }
+            
+            .no-print {
+                display: none;
+            }
+            
+            /* Print header and footer on each page */
+            @page {
+                @top-center {
+                    content: "Non-Profit Fund Accounting System v9.0";
+                }
+                @bottom-center {
+                    content: "Page " counter(page) " of " counter(pages);
+                }
+                @bottom-right {
+                    content: "July 22, 2025";
+                }
+            }
+        }
+        
+        /* General styles */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
             margin: 0;
-            padding: 0;
-            background-color: #fff;
+            padding: 0 20px;
+            max-width: 8.5in;
+            margin: 0 auto;
+            background-color: #f9f9f9;
         }
+        
         .guide-container {
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
             border: 1px solid #ddd;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+        
         .cover-page {
             text-align: center;
             padding: 50px 20px;
             border-bottom: 2px solid #1976d2;
             margin-bottom: 30px;
         }
+        
         .cover-page h1 {
             font-size: 32px;
             color: #1976d2;
             margin-bottom: 10px;
         }
+        
         .cover-page h2 {
             font-size: 20px;
             color: #555;
             margin-bottom: 30px;
         }
+        
         .cover-page p {
             font-size: 14px;
             color: #777;
         }
+        
+        /* Table of Contents */
         .toc {
-            margin-bottom: 30px;
+            margin: 2em 0 3em 0;
             padding: 15px;
             background-color: #f9f9f9;
             border: 1px solid #eee;
             border-radius: 4px;
         }
+        
         .toc h2 {
-            font-size: 20px;
             color: #1976d2;
+            font-size: 20px;
             margin-top: 0;
             margin-bottom: 15px;
             border-bottom: 1px solid #ddd;
             padding-bottom: 5px;
         }
+        
         .toc ul {
             list-style-type: none;
             padding-left: 0;
         }
-        .toc ul li {
+        
+        .toc li {
             margin-bottom: 8px;
+            display: flex;
         }
-        .toc ul li a {
-            text-decoration: none;
-            color: #2e7d32;
+        
+        .toc-item {
+            flex-grow: 1;
         }
-        .toc ul li a:hover {
-            text-decoration: underline;
+        
+        .toc-dots {
+            flex-grow: 1;
+            border-bottom: 1px dotted #ccc;
+            margin: 0 5px;
+            position: relative;
+            top: -5px;
         }
-        .toc ul ul {
-            padding-left: 20px;
-            margin-top: 5px;
+        
+        .toc-page {
+            flex-shrink: 0;
+            width: 30px;
+            text-align: right;
         }
+        
+        /* Headings */
+        h1, h2, h3, h4 {
+            color: #1976d2;
+            page-break-after: avoid;
+        }
+        
         h1.main-title {
             font-size: 32px;
             color: #1976d2;
@@ -80,6 +157,7 @@
             margin-bottom: 30px;
             text-align: center;
         }
+        
         h2.section-title {
             font-size: 24px;
             color: #2e7d32;
@@ -88,12 +166,14 @@
             border-bottom: 1px solid #ccc;
             padding-bottom: 8px;
         }
+        
         h3.subsection-title {
             font-size: 20px;
             color: #455a64;
             margin-top: 25px;
             margin-bottom: 15px;
         }
+        
         h4.subsubsection-title {
             font-size: 16px;
             color: #555;
@@ -101,23 +181,33 @@
             margin-bottom: 10px;
             font-weight: bold;
         }
+        
+        /* Content */
         p {
             margin-bottom: 15px;
         }
+        
         ul.comparison-list {
             list-style-type: disc;
             margin-left: 20px;
             margin-bottom: 15px;
         }
+        
         ul.comparison-list li {
             margin-bottom: 8px;
+            page-break-inside: avoid;
         }
+        
         .comparison-point {
             margin-bottom: 20px;
+            page-break-inside: avoid;
         }
+        
         .comparison-point strong {
             color: #1976d2;
         }
+        
+        /* Footer */
         .footer {
             margin-top: 50px;
             border-top: 1px solid #eee;
@@ -126,55 +216,139 @@
             color: #777;
             text-align: center;
         }
-        .page-break-before {
-            page-break-before: always;
+        
+        /* Print button (only visible in screen mode) */
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease;
         }
+        
+        .print-button:hover {
+            background-color: #1565c0;
+        }
+        
         @media print {
-            body {
-                margin: 0;
-                padding: 20mm; /* Standard print margins */
-                font-size: 10pt;
+            .print-button {
+                display: none;
             }
+            
             .guide-container {
                 border: none;
                 margin: 0;
                 padding: 0;
                 max-width: 100%;
+                box-shadow: none;
             }
+            
             .cover-page, .toc {
                 page-break-after: always;
             }
+            
             h2.section-title {
                 page-break-before: always;
+            }
+            
+            body {
+                background-color: white;
+                padding: 0;
             }
         }
     </style>
 </head>
 <body>
+    <button class="print-button no-print" onclick="window.print()">Print to PDF</button>
+    
     <div class="guide-container">
         <div class="cover-page">
             <h1>Custom Non-Profit Accounting System (v9.0) vs. Zoho Books</h1>
             <h2>A Comparative Analysis for Grant-Making Charities</h2>
-            <p>Date: July 11, 2025</p>
+            <p>Date: July 22, 2025</p>
         </div>
 
         <div class="toc page-break-before">
             <h2>Table of Contents</h2>
             <ul>
-                <li><a href="#introduction">1. Introduction</a></li>
-                <li><a href="#fund-accounting">2. Fund Accounting Capabilities</a></li>
-                <li><a href="#grant-management">3. Grant Management Features</a></li>
-                <li><a href="#inter-entity">4. Inter-Entity Transfers (v9.0)</a></li>
-                <li><a href="#bank-account-management">5. Bank Account Management (v9.0)</a></li>
-                <li><a href="#nacha-vendor-payments">6. NACHA Vendor Payments (v9.0)</a></li>
-                <li><a href="#financial-reporting">7. Financial Reporting</a></li>
-                <li><a href="#customization-flexibility">8. Customization & Flexibility</a></li>
-                <li><a href="#integration-ecosystem">9. Integration & Ecosystem</a></li>
-                <li><a href="#user-experience">10. User Experience & Learning Curve</a></li>
-                <li><a href="#compliance-regulatory">11. Compliance & Regulatory Features</a></li>
-                <li><a href="#cost-considerations">12. Cost Considerations</a></li>
-                <li><a href="#organization-size">13. Organization Size Considerations</a></li>
-                <li><a href="#conclusion">14. Conclusion</a></li>
+                <li>
+                    <span class="toc-item">1. Introduction</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">1</span>
+                </li>
+                <li>
+                    <span class="toc-item">2. Fund Accounting Capabilities</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">2</span>
+                </li>
+                <li>
+                    <span class="toc-item">3. Grant Management Features</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">3</span>
+                </li>
+                <li>
+                    <span class="toc-item">4. Inter-Entity Transfers (v9.0)</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">4</span>
+                </li>
+                <li>
+                    <span class="toc-item">5. Bank Account Management (v9.0)</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">5</span>
+                </li>
+                <li>
+                    <span class="toc-item">6. NACHA Vendor Payments (v9.0)</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">6</span>
+                </li>
+                <li>
+                    <span class="toc-item">7. Financial Reporting</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">7</span>
+                </li>
+                <li>
+                    <span class="toc-item">8. Customization & Flexibility</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">8</span>
+                </li>
+                <li>
+                    <span class="toc-item">9. Integration & Ecosystem</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">9</span>
+                </li>
+                <li>
+                    <span class="toc-item">10. User Experience & Learning Curve</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">10</span>
+                </li>
+                <li>
+                    <span class="toc-item">11. Compliance & Regulatory Features</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">11</span>
+                </li>
+                <li>
+                    <span class="toc-item">12. Cost Considerations</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">12</span>
+                </li>
+                <li>
+                    <span class="toc-item">13. Organization Size Considerations</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">13</span>
+                </li>
+                <li>
+                    <span class="toc-item">14. Conclusion</span>
+                    <span class="toc-dots"></span>
+                    <span class="toc-page">14</span>
+                </li>
             </ul>
         </div>
 
@@ -493,8 +667,17 @@
         </div>
 
         <div class="footer">
-            <p>Comparative Analysis | Generated on July 11, 2025</p>
+            <p>Non-Profit Fund Accounting System v9.0 | Comparative Analysis | July 22, 2025</p>
         </div>
     </div>
+    
+    <script>
+        // Add page numbers to TOC based on actual layout
+        window.addEventListener('load', function() {
+            if (window.matchMedia('screen').matches) {
+                document.querySelector('.print-button').style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>

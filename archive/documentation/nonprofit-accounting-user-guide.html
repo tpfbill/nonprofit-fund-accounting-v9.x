@@ -205,7 +205,7 @@
         <div class="cover-page">
             <h1>Non-Profit Fund Accounting System</h1>
             <h2>User Guide</h2>
-            <p>Version 8.9</p>
+            <p>Version 9.0</p>
             <p>Date: July 19, 2025</p>
         </div>
 
@@ -863,18 +863,18 @@
         </div>
         
         <!-- =============================================================== -->
-        <!-- 14. Vendor Payments (NEW IN v8.9)                              -->
+        <!-- 14. Vendor Payments (NEW IN v9.0)                              -->
         <!-- =============================================================== -->
         <div id="vendor-payments" class="page-break-before">
             <h2 class="section-title">14. Vendor Payments</h2>
 
-            <p>The <strong>Vendor Payments</strong> module – fully completed in <em>version 8.9</em> – lets you create ACH-ready payment
+            <p>The <strong>Vendor Payments</strong> module – fully completed in <em>version 9.0</em> – lets you create ACH-ready payment
                batches, manage vendor banking details and generate NACHA files for upload to your bank.</p>
 
             <h3 class="subsection-title">14.1 Creating Payment Batches</h3>
             <ol>
                 <li>Select <strong>Vendor Payments ▸ Payment Batches ▸ <em>New Batch</em></strong>.</li>
-                <li>Choose an <strong>Entity</strong> and (optionally) a <strong>Fund</strong> – the dropdowns now populate instantly thanks to the v8.9 timing fix.</li>
+                <li>Choose an <strong>Entity</strong> and (optionally) a <strong>Fund</strong> – the dropdowns now populate instantly thanks to the v9.0 timing fix.</li>
                 <li>Enter a <em>Description</em>, Batch/Effective dates and select the correct <strong>NACHA Settings</strong>.</li>
                 <li>Click <em>Create Batch</em>.  The batch appears in the list with status <code>draft</code>.</li>
                 <li>Add one or more <em>Payment Items</em> (vendor, amount, memo).</li>
@@ -905,9 +905,9 @@
                 <tr><td><code>processed</code></td><td>NACHA file generated/uploaded – batch locked.</td></tr>
             </table>
 
-            <h3 class="subsection-title">14.5 Entity &amp; Fund Dropdown Fix (v8.9)</h3>
+            <h3 class="subsection-title">14.5 Entity &amp; Fund Dropdown Fix (v9.0)</h3>
             <p>Prior versions occasionally showed empty dropdowns because data loaded <em>before</em> the modal DOM existed.
-               Version 8.9 attaches a <code>shown.bs.modal</code> listener that refreshes the Entity list and then filters funds accordingly – ensuring options always appear.</p>
+               Version 9.0 attaches a <code>shown.bs.modal</code> listener that refreshes the Entity list and then filters funds accordingly – ensuring options always appear.</p>
         </div>
 
         <div class="page-footer">

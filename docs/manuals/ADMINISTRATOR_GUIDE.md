@@ -38,7 +38,7 @@ This is a summary of the full deployment process.
     *   **Node.js**: Use `nodesource` to install v18.
     *   **PostgreSQL**: `sudo apt install postgresql postgresql-contrib`.
     *   **Nginx**: `sudo apt install nginx`.
-4.  **Clone Repository**: `git clone -b v8.5 https://github.com/tpfbill/nonprofit-fund-accounting.git` into `/home/npfa/`.
+4.  **Clone Repository**: `git clone -b v9.0 https://github.com/tpfbill/nonprofit-fund-accounting.git` into `/home/npfa/`.
 5.  **Install App Dependencies**: `cd nonprofit-fund-accounting && npm install`.
 6.  **Configure Environment**: Create a `.env` file with your database credentials and `NODE_ENV=production`.
 7.  **Set up Database**: Create the user and database in PostgreSQL.
@@ -55,7 +55,7 @@ This is a summary of the full deployment process.
 ### 3.2. Docker Deployment (Windows/Linux)
 For detailed instructions, refer to **`DOCKER_SETUP_WINDOWS.md`**. The process is:
 
-1.  **Clone Repository**: `git clone -b v8.5 https://github.com/tpfbill/nonprofit-fund-accounting.git`.
+1.  **Clone Repository**: `git clone -b v9.0 https://github.com/tpfbill/nonprofit-fund-accounting.git`.
 2.  **Configure Environment**: Rename `.env.docker` to `.env`.
 3.  **Build & Run**: `docker-compose up -d --build`.
 4.  **Initialize Database**:
@@ -123,7 +123,7 @@ The organizational structure is critical for proper reporting.
 
 ### 7.4 Inter-Entity Transfer Configuration
 
-The **Inter-Entity Transfer** feature (introduced in v8.6) allows you to move cash between sibling entities while automatically creating a balanced pair of journal entries and maintaining accurate **Due To / Due From** balances.
+The **Inter-Entity Transfer** feature (introduced in v8.6, enhanced in v9.0) allows you to move cash between sibling entities while automatically creating a balanced pair of journal entries and maintaining accurate **Due To / Due From** balances.
 
 #### 1. Purpose
 *  Eliminate manual dual-entry work when one legal entity advances or reimburses funds to another.  
@@ -164,7 +164,7 @@ These accounts should be **Active** and mapped to the correct entity.
 ## 8. NACHA Vendor Payment System Administration
 
 ### 8.1 Overview
-Version 8.9 introduces a fully-integrated NACHA (ACH) **Vendor Payment System** that lets your organization pay suppliers electronically and generate bank-ready ACH files.  The feature set includes:
+Version 9.0 provides a fully-integrated NACHA (ACH) **Vendor Payment System** that lets your organization pay suppliers electronically and generate bank-ready ACH files.  The feature set includes:
 * Vendor master records with multiple bank accounts  
 * Company-wide NACHA settings (Originating DFI, Company ID, SEC code)  
 * Payment batch workflow (draft → approved → processed)  
@@ -326,7 +326,7 @@ These scripts automatically handle backups, code pulling, dependency updates, se
 
 1.  **Automate Backups**: Ensure the backup script is running daily via `cron` or Windows Task Scheduler.
 2.  **Separate Environments**: Maintain separate development, staging, and production environments. Test all updates in staging before deploying to production.
-3.  **Use Version Control**: All changes, including configuration, should be committed to Git. Use feature branches for development and merge to the main production branch (`v8.5` in our case) for deployment.
+3.  **Use Version Control**: All changes, including configuration, should be committed to Git. Use feature branches for development and merge to the main production branch (`v9.0` in our case) for deployment.
 4.  **Monitor Actively**: Use tools like `htop` for real-time monitoring and set up alerts for service failures or high resource usage.
 5.  **Secure Credentials**: Never commit secrets (like passwords or API keys) directly to Git. Use environment files (`.env`) and add them to `.gitignore`.
 

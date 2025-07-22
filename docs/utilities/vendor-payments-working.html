@@ -90,7 +90,7 @@
             </h5>
             <button
                 class="btn btn-light btn-sm"
-                onclick="window.location.href='index.html'">
+                onclick="window.location.href='../../index.html'">
                 <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
             </button>
         </div>
@@ -101,7 +101,7 @@
         <div class="d-flex justify-content-end mb-3">
             <button
                 class="btn btn-outline-primary"
-                onclick="window.location.href='index.html'">
+                onclick="window.location.href='../../index.html'">
                 <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
             </button>
         </div>
@@ -1340,8 +1340,8 @@
                    Gracefully handle missing endpoint
                    ----------------------------------------------------------
                    Some installations may not yet expose /api/bank-accounts.
-                   If the endpoint returns 404 we treat it as “feature not
-                   implemented” – log and exit without bothering the user.
+                   If the endpoint returns 404 we treat it as "feature not
+                   implemented" – log and exit without bothering the user.
                 ---------------------------------------------------------- */
                 if (!response.ok) {
                     if (response.status === 404) {
@@ -1661,191 +1661,3 @@
         
         async function fetchNachaFiles() {
             try {
-                showLoading();
-                const response = await fetch(`${API_BASE_URL}/api/nacha-files`);
-                const files = await response.json();
-                renderNachaFilesTable(files);
-                hideLoading();
-            } catch (error) {
-                hideLoading();
-                console.error('Error fetching NACHA files:', error);
-                showToast('Error', 'Failed to load NACHA files', true);
-            }
-        }
-        
-        // Render Functions
-        function renderVendorsTable() {
-            const tableBody = document.getElementById('vendorsTableBody');
-            tableBody.innerHTML = '';
-            
-            if (vendors.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="8" class="text-center">No vendors found</td>';
-                tableBody.appendChild(row);
-                return;
-            }
-            
-            vendors.forEach(vendor => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${vendor.vendor_code}</td>
-                    <td>${vendor.name}</td>
-                    <td>${vendor.contact_name || ''}</td>
-                    <td>${vendor.email || ''}</td>
-                    <td>${vendor.phone || ''}</td>
-                    <td><span class="badge bg-info">${vendor.bank_account_count || '0'}</span></td>
-                    <td><span class="badge ${getStatusBadgeClass(vendor.status)}">${vendor.status}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary view-vendor-btn" data-vendor-id="${vendor.id}">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary edit-vendor-btn" data-vendor-id="${vendor.id}">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger delete-vendor-btn" data-vendor-id="${vendor.id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-            
-            // Add event listeners
-            document.querySelectorAll('.view-vendor-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const vendorId = btn.getAttribute('data-vendor-id');
-                    fetchVendorDetails(vendorId);
-                });
-            });
-            
-            document.querySelectorAll('.edit-vendor-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const vendorId = btn.getAttribute('data-vendor-id');
-                    const vendor = vendors.find(v => v.id === vendorId);
-                    if (vendor) {
-                        populateEditVendorForm(vendor);
-                        const modal = new bootstrap.Modal(document.getElementById('editVendorModal'));
-                        modal.show();
-                    }
-                });
-            });
-            
-            document.querySelectorAll('.delete-vendor-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const vendorId = btn.getAttribute('data-vendor-id');
-                    const vendor = vendors.find(v => v.id === vendorId);
-                    if (vendor) {
-                        showDeleteVendorConfirmation(vendor);
-                    }
-                });
-            });
-        }
-        
-        function renderVendorDetails(vendor, bankAccounts) {
-            // Show vendor details section
-            document.getElementById('vendorDetailsSection').style.display = 'block';
-            
-            // Set vendor details
-            document.getElementById('vendorDetailsTitle').textContent = `${vendor.name} (${vendor.vendor_code})`;
-            document.getElementById('detailVendorCode').textContent = vendor.vendor_code;
-            document.getElementById('detailVendorName').textContent = vendor.name;
-            document.getElementById('detailTaxId').textContent = vendor.tax_id || 'N/A';
-            document.getElementById('detailContactName').textContent = vendor.contact_name || 'N/A';
-            document.getElementById('detailEmail').textContent = vendor.email || 'N/A';
-            document.getElementById('detailPhone').textContent = vendor.phone || 'N/A';
-            
-            // Format address
-            let address = vendor.address_line1 || '';
-            if (vendor.address_line2) address += `<br>${vendor.address_line2}`;
-            if (vendor.city || vendor.state || vendor.postal_code) {
-                address += `<br>${vendor.city || ''}, ${vendor.state || ''} ${vendor.postal_code || ''}`;
-            }
-            if (vendor.country) address += `<br>${vendor.country}`;
-            document.getElementById('detailAddress').innerHTML = address || 'N/A';
-            
-            document.getElementById('detailVendorStatus').innerHTML = `<span class="badge ${getStatusBadgeClass(vendor.status)}">${vendor.status}</span>`;
-            
-            // Render bank accounts
-            const bankAccountsContainer = document.getElementById('bankAccountsContainer');
-            bankAccountsContainer.innerHTML = '';
-            
-            if (bankAccounts.length === 0) {
-                bankAccountsContainer.innerHTML = '<div class="col-12"><div class="alert alert-info">No bank accounts found</div></div>';
-                return;
-            }
-            
-            bankAccounts.forEach(account => {
-                const card = document.createElement('div');
-                card.className = `col-md-6 mb-3`;
-                
-                const cardInner = document.createElement('div');
-                cardInner.className = `card bank-account-card ${account.is_primary ? 'primary' : ''}`;
-                
-                cardInner.innerHTML = `
-                    <div class="card-body">
-                        <h5 class="card-title">${account.account_name} ${account.is_primary ? '<span class="badge bg-success">Primary</span>' : ''}</h5>
-                        <p class="card-text">                            <span class="badge-account">${account.account_type}</span><br>
-                            Account: <code class="account-number-masked">${maskAccountNumber(account.account_number)}</code><br>
-                            Routing: <span class="badge-account">${account.routing_number}</span>
-                        </p>
-                        <div class="d-flex justify-content-between">
-                            <span class="badge ${getStatusBadgeClass(account.status)}">${account.status}</span>
-                            <div>
-                                <button class="btn btn-sm btn-outline-primary edit-bank-account-btn" data-account-id="${account.id}">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger delete-bank-account-btn" data-account-id="${account.id}">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                card.appendChild(cardInner);
-                bankAccountsContainer.appendChild(card);
-            });
-        }
-        
-        // Initialize page when DOM is loaded
-        document.addEventListener("DOMContentLoaded", function() {
-            // Initialize data
-            fetchEntities();
-            fetchFunds();
-            fetchBankAccounts();
-            fetchVendors();
-            fetchNachaSettings();
-            fetchBatches();
-            
-            // Set up event listeners for entity changes to update funds
-            document.getElementById("batchEntityId").addEventListener("change", function() {
-                const selectedEntityId = this.value;
-                if (selectedEntityId) {
-                    fetchFunds(selectedEntityId);
-                } else {
-                    fetchFunds();
-                }
-            });
-
-            /* -----------------------------------------------------------------
-               Ensure entity / fund dropdowns are populated *every* time
-               the Create Batch modal becomes visible (covers cases where the
-               modal’s DOM is not present or gets rebuilt after initial page
-               load).
-            ----------------------------------------------------------------- */
-            const batchModalEl = document.getElementById('createBatchModal');
-            if (batchModalEl) {
-                batchModalEl.addEventListener('shown.bs.modal', () => {
-                    console.debug('[modal] createBatchModal shown – refreshing entities & funds');
-                    fetchEntities().then(() => {
-                        const curEntity = document.getElementById('batchEntityId')?.value || '';
-                        fetchFunds(curEntity || null);
-                    });
-                });
-            }
-            
-            console.log("Vendor payments page initialized");
-        });
-    </script>
-</body>
-</html>

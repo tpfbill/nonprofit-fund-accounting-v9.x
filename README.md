@@ -34,6 +34,12 @@ A comprehensive web-based fund accounting system for non-profit organizations.
 
 ---
 
+> **Need a step-by-step virtual-machine walkthrough?**  
+> See the comprehensive *Ubuntu 24.04 in VirtualBox Installation Guide* here:  
+> [`docs/guides/INSTALLATION_GUIDE_VirtualBox_Ubuntu24_v9.x.md`](docs/guides/INSTALLATION_GUIDE_VirtualBox_Ubuntu24_v9.x.md)
+
+---
+
 ## Quick Start (One-Line Setup)
 
 After installing the requirements above and cloning the repo:

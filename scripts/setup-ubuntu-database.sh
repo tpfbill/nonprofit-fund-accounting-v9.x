@@ -125,14 +125,21 @@ create_database() {
 # Function to set up database schema
 setup_database_schema() {
   log_info "Setting up database schema..."
-  
+
+  # NOTE:
+  #   db-init.sql creates the `pgcrypto` extension which provides the
+  #   gen_random_uuid() function used throughout the schema (UUID PKs).
+  #
+  #   All database files live in the repository-root `database/` directory,
+  #   so we reference them via "$SCRIPT_DIR/../database/…"
+
   # Run db-init.sql to create tables
-  if [ -f "$SCRIPT_DIR/database/db-init.sql" ]; then
+  if [ -f "$SCRIPT_DIR/../database/db-init.sql" ]; then
     log_info "Running db-init.sql..."
-    sudo -u $POSTGRES_USER psql -d $DB_NAME -f "$SCRIPT_DIR/database/db-init.sql"
+    sudo -u $POSTGRES_USER psql -d $DB_NAME -f "$SCRIPT_DIR/../database/db-init.sql"
     log_success "Database schema created successfully."
   else
-    log_error "db-init.sql not found in $SCRIPT_DIR/database"
+    log_error "db-init.sql not found (expected at $SCRIPT_DIR/../database)"
     exit 1
   fi
 }
@@ -169,14 +176,14 @@ load_test_data() {
   log_info "Loading The Principle Foundation test data..."
   
   # Check if load-principle-foundation-data.js exists
-  if [ -f "$SCRIPT_DIR/database/load-principle-foundation-data.js" ]; then
+  if [ -f "$SCRIPT_DIR/../database/load-principle-foundation-data.js" ]; then
     # Set environment variables for the script
     export PGUSER=$DB_USER
     export PGPASSWORD=$DB_PASSWORD
     export PGDATABASE=$DB_NAME
     
     # Run the script
-    node "$SCRIPT_DIR/database/load-principle-foundation-data.js"
+    node "$SCRIPT_DIR/../database/load-principle-foundation-data.js"
     
     if [ $? -eq 0 ]; then
       log_success "Test data loaded successfully."
@@ -185,7 +192,7 @@ load_test_data() {
       exit 1
     fi
   else
-    log_error "load-principle-foundation-data.js not found in $SCRIPT_DIR/database"
+    log_error "load-principle-foundation-data.js not found in $SCRIPT_DIR/../database"
     exit 1
   fi
 }

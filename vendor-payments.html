@@ -1199,12 +1199,62 @@
             document.querySelector('.loading-overlay').style.display = 'flex';
         }
         
-        function hideLoading() {
-            document.querySelector('.loading-overlay').style.display = 'none';
+                showLoading();
+                const response = await fetch(`${API_BASE_URL}/api/nacha-files`);
+                const files = await response.json();
+                renderNachaFilesTable(files);
+                hideLoading();
+            } catch (error) {
+                hideLoading();
+                console.error('Error fetching NACHA files:', error);
+                showToast('Error', 'Failed to load NACHA files', true);
+            }
         }
-        
-        function showToast(title, message, isError = false) {
-            const toast = document.getElementById('toastNotification');
+
+        /* --------------------------------------------------------------
+           Page Initialisation
+        -------------------------------------------------------------- */
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('[Vendor-Payments] Initialising …');
+            try {
+                // Core reference data
+                await fetchEntities();
+                await fetchFunds();
+                await fetchBankAccounts();
+
+                // Domain objects
+                await fetchVendors();
+                await fetchNachaSettings();
+                await fetchBatches();
+                await fetchNachaFiles();
+
+                /* ----------------------------------------------
+                   When entity changes, reload funds accordingly
+                ---------------------------------------------- */
+                [
+                    document.getElementById('batchEntityId'),
+                    document.getElementById('entityId'),
+                    document.getElementById('editEntityId'),
+                    document.getElementById('settingsEntityId'),
+                    document.getElementById('editSettingsEntityId')
+                ].forEach(select => {
+                    if (select) {
+                        select.addEventListener('change', e => {
+                            const entityId = e.target.value || null;
+                            fetchFunds(entityId);
+                        });
+                    }
+                });
+
+                console.log('[Vendor-Payments] Initialised');
+            } catch (err) {
+                console.error('[Vendor-Payments] Initialisation error:', err);
+                showToast('Error', 'Failed to initialise page', true);
+        }
+        });
+
+        /* -------------------------------------------------------------- */
+        async function fetchVendorDetails(vendorId) {
             const toastTitle = document.getElementById('toastTitle');
             const toastMessage = document.getElementById('toastMessage');
             

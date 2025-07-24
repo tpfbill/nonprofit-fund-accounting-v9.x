@@ -117,6 +117,9 @@ chmod 600 .env
 <p>Run the hardened Ubuntu helper script (idempotent):</p>
 <pre><code class="language-bash">scripts/setup-ubuntu-database.sh
 </code></pre>
+<blockquote>
+<p><strong>Note</strong> All schema and data-load SQL/JS files live in the repository’s<br>top-level <code>database/</code> directory (e.g. <code>database/db-init.sql</code>).<br>The helper script already points there, but if you customise it ensure you <strong>do not</strong> prefix<br>the path with <code>scripts/</code>.</p>
+</blockquote>
 <p>The script:</p>
 <ol>
 <li>Ensures PostgreSQL service is running.</li>

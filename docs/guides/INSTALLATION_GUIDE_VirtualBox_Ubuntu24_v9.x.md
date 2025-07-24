@@ -130,6 +130,10 @@ Run the hardened Ubuntu helper script (idempotent):
 ```bash
 scripts/setup-ubuntu-database.sh
 ```
+> **Note** All schema and data-load SQL/JS files live in the repository’s  
+> top-level `database/` directory (e.g. `database/db-init.sql`).  
+> The helper script already points there, but if you customise it ensure you **do not** prefix  
+> the path with `scripts/`.
 
 The script:
 1. Ensures PostgreSQL service is running.

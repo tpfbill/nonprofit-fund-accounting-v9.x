@@ -6,12 +6,18 @@
 -- including vendor management, payment batches, and NACHA file generation.
 -- =============================================================================
 
+-- NOTE ------------------------------------------------------------------------
+-- This script relies on the pgcrypto extension created in db-init.sql:
+--     CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- which provides the gen_random_uuid() function used below.
+-- -----------------------------------------------------------------------------
+
 -- -----------------------------------------------------
 -- Table: vendors
 -- Description: Stores vendor/payee information
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS vendors (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     entity_id UUID REFERENCES entities(id) ON DELETE SET NULL,
     vendor_code VARCHAR(50) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
@@ -42,7 +48,7 @@ CREATE INDEX IF NOT EXISTS idx_vendor_name ON vendors(name);
 -- Description: Stores vendor banking information for ACH payments
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS vendor_bank_accounts (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     vendor_id UUID NOT NULL REFERENCES vendors(id) ON DELETE CASCADE,
     account_name VARCHAR(100) NOT NULL,
     routing_number VARCHAR(9) NOT NULL,
@@ -64,7 +70,7 @@ CREATE INDEX IF NOT EXISTS idx_vendor_bank_vendor ON vendor_bank_accounts(vendor
 -- Description: Organization's NACHA file generation settings
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS company_nacha_settings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     entity_id UUID REFERENCES entities(id) ON DELETE SET NULL,
     company_name VARCHAR(16) NOT NULL, -- NACHA requires max 16 chars
     company_id VARCHAR(10) NOT NULL, -- Tax ID or NACHA assigned ID
@@ -84,7 +90,7 @@ CREATE TABLE IF NOT EXISTS company_nacha_settings (
 -- Description: Groups payments for NACHA file generation
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS payment_batches (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     batch_number VARCHAR(50) NOT NULL UNIQUE,
     entity_id UUID REFERENCES entities(id) ON DELETE SET NULL,
     fund_id UUID REFERENCES funds(id) ON DELETE SET NULL,
@@ -113,7 +119,7 @@ CREATE INDEX IF NOT EXISTS idx_payment_batch_status ON payment_batches(status);
 -- Description: Individual payments within a batch
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS payment_items (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     payment_batch_id UUID NOT NULL REFERENCES payment_batches(id) ON DELETE CASCADE,
     vendor_id UUID NOT NULL REFERENCES vendors(id) ON DELETE RESTRICT,
     vendor_bank_account_id UUID NOT NULL REFERENCES vendor_bank_accounts(id) ON DELETE RESTRICT,
@@ -141,7 +147,7 @@ CREATE INDEX IF NOT EXISTS idx_payment_item_status ON payment_items(status);
 -- Description: Tracks generated NACHA files
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS nacha_files (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     payment_batch_id UUID NOT NULL REFERENCES payment_batches(id) ON DELETE CASCADE,
     file_name VARCHAR(255) NOT NULL,
     file_path VARCHAR(255),

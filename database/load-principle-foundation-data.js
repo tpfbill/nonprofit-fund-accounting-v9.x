@@ -11,6 +11,9 @@
  * 5. Creates sample journal entries to support fund balances
  */
 
+// Load environment variables from .env file (if present)
+require('dotenv').config();
+
 const { Client } = require('pg');
 const crypto = require('crypto');
 const { getDbConfig } = require('../src/db/db-config');

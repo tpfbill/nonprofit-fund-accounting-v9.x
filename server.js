@@ -1,4 +1,8 @@
 // server.js
+// Load environment variables from .env file **before** anything else tries to
+// read process.env so that DB credentials, PORT, etc. are available
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
